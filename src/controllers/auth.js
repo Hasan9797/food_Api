@@ -1,22 +1,73 @@
 import User from '../models/users.js';
 import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer';
 import bcrypt from 'bcrypt';
 import { v4 } from 'uuid';
 import { NoAuthorization } from '../enums/transaction.enum.js';
 
 import TransactionError from '../errors/transaction.error.js';
 
+function sendSmsByEmail(userEmail) {
+	let result = 0;
+	const characters = '012345678976823940129386746382749127412345678911023';
+	const charactersLength = characters.length;
+	let counter = 0;
+	while (counter < 5) {
+		result += characters.charAt(Math.floor(Math.random() * charactersLength));
+		counter += 1;
+	}
+
+	let transporter = nodemailer.createTransport({
+		service: 'gmail',
+		auth: {
+			user: 'hasanjonsadullayev97@gmail.com',
+			pass: 'ejlndgtvmylkyetn',
+		},
+	});
+
+	let mailOptions = {
+		from: 'hasanjonsadullayev97@gmail.com',
+		to: userEmail,
+		subject: 'Email With Attachments',
+		html: `<h1>Quyidagi parolni Dilhush Fayz mobile ilovasiga kirting: ${result}</h1>`,
+	};
+
+	return { transporter, mailOptions, result };
+}
+
+export const verifyEmail = async (req, res) => {
+	try {
+		const { transporter, mailOptions, result } = sendSmsByEmail(req.body.email);
+		transporter.sendMail(mailOptions, (error, info) => {
+			if (error) {
+				throw error;
+			} else {
+				console.log('Email Sent Successfully to ' + mailOptions.to);
+			}
+		});
+		return res
+			.status(200)
+			.json({ message: 'successfully send to email', data: result });
+	} catch (error) {
+		return res.status(500).json({
+			message: error.message,
+			data: false,
+		});
+	}
+};
+
 export const Register = async (req, res) => {
 	try {
-		const { fullName, phoneNumber, password, isAdmin } = req.body;
+		const { fullName, phoneNumber, email, password, isAdmin } = req.body;
 		const currentUser = await User.findOne({
-			phoneNumber,
+			email,
 		});
 		if (!currentUser) {
 			const hashPass = await bcrypt.hash(password, 10);
 			const user = new User({
 				fullName,
 				phoneNumber,
+				email,
 				password: hashPass,
 				userId: v4(),
 				isAdmin,
@@ -131,5 +182,53 @@ export const getByIdUser = async (req, res) => {
 			data: false,
 		});
 		return;
+	}
+};
+
+export const deletedUser = async (req, res) => {
+	try {
+		await User.findByIdAndDelete(req.params.id);
+		return res
+			.status(200)
+			.json({ message: 'successfully deleted', data: true });
+	} catch (error) {
+		res.status(500).json({
+			message: error.message,
+			data: false,
+		});
+		return;
+	}
+};
+
+export const updatePassword = async (req, res) => {
+	try {
+		const { email, password } = req.body;
+		const currentUser = await User.findOne({
+			email,
+		});
+		if (currentUser) {
+			const newUser = await User.findByIdAndUpdate(
+				{ _id: currentUser._id },
+				{
+					$set: {
+						password: password,
+					},
+				},
+				{ new: true, useFindAndModify: false }
+			);
+			if (!newUser) {
+				return res.status(403).json({
+					message: 'Is not a User',
+					data: false,
+				});
+			}
+			res.status(200).json({ message: 'Successfully updated', data: newUser });
+		}
+		return res.status(403).json({ message: 'Is not a User', data: false });
+	} catch (error) {
+		return res.status(500).json({
+			message: error.message,
+			data: false,
+		});
 	}
 };
