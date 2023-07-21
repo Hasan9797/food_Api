@@ -174,7 +174,6 @@ class TransactionService {
 		// const expirationTime = (transaction.create_time - currentTime) / 60000 < 12; // 12m
 
 		if (!transaction.timeout) {
-			console.log('time out');
 			await this.repo.updateById(params.id, {
 				state: TransactionState.PendingCanceled,
 				reason: 4,

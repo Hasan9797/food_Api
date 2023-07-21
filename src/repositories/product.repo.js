@@ -1,4 +1,4 @@
-import productModel from '../models/onlineOrder.js';
+import productModel from '../models/orderPay.js';
 
 class ProductRepo {
 	constructor(model) {

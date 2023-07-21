@@ -1,7 +1,2 @@
 # Dependency directories
 node_modules/
-
-# dotenv environment variable files
-.env
-# IDEs and editors
-/.idea

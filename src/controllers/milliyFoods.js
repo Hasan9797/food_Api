@@ -62,7 +62,7 @@ export const updateNationalFood = async (req, res) => {
 			{ new: true, useFindAndModify: false }
 		);
 		if (!newFood) {
-			res.status(500).json({
+			return res.status(500).json({
 				message: 'The change failed',
 				data: false,
 			});

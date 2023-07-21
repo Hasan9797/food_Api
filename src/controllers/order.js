@@ -8,11 +8,12 @@ export const getOrder = async (req, res) => {
 			user_id: req.user._id,
 		});
 		if (!order) {
-			return res.status(500).json({ message: 'Order is impty', data: false });
+			return res.status(500).json({ message: 'Order is impty', data: [] });
 		}
-		return res
-			.status(200)
-			.json({ message: 'successfully get All is data', data: order.foods });
+		return res.status(200).json({
+			message: 'successfully get All is data',
+			data: [{ _id: order._id, foods: order.foods, amount: order.amount }],
+		});
 	} catch (e) {
 		return res.status(500).json({
 			message: 'Order is impty',
@@ -64,7 +65,6 @@ export const addOrder = async (req, res) => {
 		});
 	}
 };
-
 
 export const deleteOrder = async (req, res, next) => {
 	try {

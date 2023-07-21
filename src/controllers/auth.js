@@ -27,7 +27,7 @@ export const Register = async (req, res) => {
 				.json({ message: 'User addet Sucsessfuly', data: newuser });
 		} else {
 			return res.json({
-				message: 'This email is olready exist',
+				message: 'This User is olready exist',
 				data: false,
 			});
 		}

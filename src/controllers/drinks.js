@@ -62,7 +62,7 @@ export const updateDrink = async (req, res) => {
 			{ new: true, useFindAndModify: false }
 		);
 		if (!newDrink) {
-			res.status(500).json({
+			return res.status(500).json({
 				message: 'The change failed',
 				data: false,
 			});
@@ -81,7 +81,9 @@ export const updateDrink = async (req, res) => {
 export const deletedDrink = async (req, res) => {
 	try {
 		await Drinks.findByIdAndDelete(req.params.id);
-		res.status(200).json({ message: 'successfully deleted', data: true });
+		return res
+			.status(200)
+			.json({ message: 'successfully deleted', data: true });
 	} catch (error) {
 		res.status(500).json({
 			message: error.message,

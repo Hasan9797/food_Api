@@ -59,7 +59,7 @@ export const updatePizza = async (req, res) => {
 			{ new: true, useFindAndModify: false }
 		);
 		if (!newPizza) {
-			res.status(500).json({
+			return res.status(200).json({
 				message: 'The change failed',
 				data: false,
 			});
