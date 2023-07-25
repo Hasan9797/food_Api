@@ -30,7 +30,10 @@ export const addOrder = async (req, res) => {
 			const neword = new Order({
 				foods: [req.body],
 				user_id: currentUser._id,
-				userName: currentUser.fullName,
+				user: {
+					fullName: currentUser.fullName,
+					phoneNumber: currentUser.phoneNumber,
+				},
 				amount: req.body.price,
 				orderId: v4(),
 			});

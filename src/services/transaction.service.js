@@ -1,6 +1,7 @@
 import transactionRepo from '../repositories/transaction.repo.js';
 import userRepo from '../repositories/user.repo.js';
 import productRepo from '../repositories/product.repo.js';
+import wsIo from '../services/socket.io.js';
 
 import {
 	PaymeError,
@@ -182,10 +183,11 @@ class TransactionService {
 
 			throw new TransactionError(PaymeError.CantDoOperation, id);
 		}
-		await this.productRepo.updateById(transaction.product_id, {
+		const payOrder = await this.productRepo.updateById(transaction.product_id, {
 			status: true,
 		});
-
+		wsIo('new_order', payOrder);
+		
 		await this.repo.updateById(params.id, {
 			state: TransactionState.Paid,
 			perform_time: currentTime,

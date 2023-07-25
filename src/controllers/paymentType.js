@@ -2,12 +2,14 @@ import Order from '../models/order.js';
 import OrderPay from '../models/orderPay.js';
 import User from '../models/users.js';
 import myKey from '../config/env.js';
+import wsIo from '../services/socket.io.js';
 
 // Post Method
 export const postPaymentType = async (req, res) => {
 	try {
 		const order = await Order.findOne({ user_id: req.user._id });
 		if (order) {
+			// ofline payment
 			if (req.body.type === 'cash') {
 				const cashPay = new OrderPay({
 					foods: order.foods,
@@ -15,17 +17,21 @@ export const postPaymentType = async (req, res) => {
 					orderId: order.orderId,
 					location: req.body.location,
 					user_id: order.user_id,
-					userName: order.userName,
+					userInfo: {
+						fullName: order.user.fullName,
+						phoneNumber: order.user.phoneNumber,
+					},
 					description: req.body.description,
-					status: true,
 				});
 				await cashPay.save();
-				Soket.emit('new_order', cashPay);
+				wsIo('new_order', cashPay);
+				//User oldd order deleted
 				await Order.findByIdAndDelete(order._id);
 				return res
 					.status(200)
 					.json({ message: 'successfully send to cash order', data: true });
 			}
+			// online payment
 			if (req.body.type === 'online') {
 				const onlinePay = new OrderPay({
 					foods: order.foods,
@@ -33,13 +39,18 @@ export const postPaymentType = async (req, res) => {
 					orderId: order.orderId,
 					location: req.body.location,
 					user_id: order.user_id,
-					userName: order.userName,
+					userInfo: {
+						fullName: order.user.fullName,
+						phoneNumber: order.user.phoneNumber,
+					},
 					type: req.body.type,
 					description: req.body.description,
 				});
 				await onlinePay.save();
+				//User oldd order deleted
 				await Order.findByIdAndDelete(order._id);
 				const user = await User.findById(req.user._id);
+				// Send payme data for payment
 				return res.status(200).json({
 					message: 'Data to be sent to PAYME',
 					data: {

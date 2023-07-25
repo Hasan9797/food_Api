@@ -15,7 +15,7 @@ class ProductRepo {
 
 	async updateById(product_id, update) {
 		const product = await this.getById(product_id);
-		return await this.model.findByIdAndUpdate(
+		const newOrder = await this.model.findByIdAndUpdate(
 			{ _id: product._id },
 			{
 				$set: {
@@ -24,6 +24,7 @@ class ProductRepo {
 			},
 			{ new: true, useFindAndModify: false }
 		);
+		return newOrder;
 	}
 }
 

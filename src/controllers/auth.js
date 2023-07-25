@@ -75,7 +75,7 @@ export const Register = async (req, res) => {
 			const newuser = await user.save();
 			return res
 				.status(200)
-				.json({ message: 'User addet Sucsessfuly', data: newuser });
+				.json({ message: 'User addet Sucsessfuly', data: true });
 		} else {
 			return res.json({
 				message: 'This User is olready exist',

@@ -8,7 +8,7 @@ import path from 'path';
 dotenv.config();
 const app = express();
 const server = createServer(app);
-const socketio = new Server(server, { cors: { origin: '*' } });
+export const ws = new Server(server, { cors: { origin: '*' } });
 
 //Middleware
 import { connectDB } from './config/database.js';
@@ -39,7 +39,7 @@ import { uploadFile, removeFile } from './libs/fileupload.js';
 
 app.post('/api/upload/file', uploadFile);
 app.use('/api/payment', routerPayment);
-app.use('/api/to/payment', routerToPayment(socketio));
+app.use('/api/to/payment', routerToPayment);
 app.use('/api/pay/order', routerPayOrder);
 app.use('/api/drink', drinkRouter);
 app.use('/api/milliyFood', milliyRoute);
