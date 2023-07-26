@@ -207,11 +207,12 @@ export const updatePassword = async (req, res) => {
 			email,
 		});
 		if (currentUser) {
+			const hashPass = await bcrypt.hash(password, 10);
 			const newUser = await User.findByIdAndUpdate(
 				{ _id: currentUser._id },
 				{
 					$set: {
-						password: password,
+						password: hashPass,
 					},
 				},
 				{ new: true, useFindAndModify: false }

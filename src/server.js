@@ -1,14 +1,14 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { Server } from 'socket.io';
 import { createServer } from 'http';
 import path from 'path';
+import { connection } from './services/socket.io.js';
 
 dotenv.config();
 const app = express();
 const server = createServer(app);
-export const ws = new Server(server, { cors: { origin: '*' } });
+connection(server);
 
 //Middleware
 import { connectDB } from './config/database.js';

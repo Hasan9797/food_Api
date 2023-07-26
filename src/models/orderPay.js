@@ -14,7 +14,7 @@ const orderSchema = new Schema(
 		description: { type: String, required: true, default: 'anything' },
 		type: { type: String, required: true, default: 'cash' },
 		status: { type: Boolean, default: false },
-		active: { type: Boolean, default: true },
+		active: { type: Boolean, default: false },
 	},
 	{ timestamps: true }
 );

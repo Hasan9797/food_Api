@@ -5,9 +5,10 @@ export const getPayOrder = async (req, res) => {
 	try {
 		const orderPay = await OrderPay.find();
 		if (orderPay) {
+			const filteredOrder = orderPay.filter(order => order.active === true);
 			return res.status(200).json({
 				message: 'successfully get is cashOrder',
-				data: orderPay,
+				data: filteredOrder,
 			});
 		}
 		return res.status(500).json({ message: 'not found', data: false });

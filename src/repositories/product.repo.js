@@ -5,6 +5,10 @@ class ProductRepo {
 		this.model = model;
 	}
 
+	async getAll() {
+		return this.model.find();
+	}
+
 	async getById(productId) {
 		return this.model.findOne({ orderId: productId });
 	}
@@ -24,7 +28,6 @@ class ProductRepo {
 			},
 			{ new: true, useFindAndModify: false }
 		);
-		return newOrder;
 	}
 }
 

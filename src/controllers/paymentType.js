@@ -2,7 +2,7 @@ import Order from '../models/order.js';
 import OrderPay from '../models/orderPay.js';
 import User from '../models/users.js';
 import myKey from '../config/env.js';
-import wsIo from '../services/socket.io.js';
+import { emitOrder } from '../services/socket.io.js';
 
 // Post Method
 export const postPaymentType = async (req, res) => {
@@ -21,10 +21,13 @@ export const postPaymentType = async (req, res) => {
 						fullName: order.user.fullName,
 						phoneNumber: order.user.phoneNumber,
 					},
+					active: true,
 					description: req.body.description,
 				});
 				await cashPay.save();
-				wsIo('new_order', cashPay);
+				const olldOrder = await Order.find();
+				const filterOrder = olldOrder.filter(order => order.active !== false);
+				emitOrder('new_order', filterOrder);
 				//User oldd order deleted
 				await Order.findByIdAndDelete(order._id);
 				return res
