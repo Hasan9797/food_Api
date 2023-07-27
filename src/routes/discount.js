@@ -8,8 +8,8 @@ import {
 
 import { verify } from '../middlewares/verfiy.js';
 
-router.post('/', verify, getDiscount);
-router.get('/', addDiscount);
+router.post('/', verify, addDiscount);
+router.get('/', getDiscount);
 router.delete('/delete/:id', verify, deletedDiscount);
 
 export default router;
