@@ -37,9 +37,9 @@ export const getByIdNationalFood = async (req, res) => {
 // Post Method
 export const postNotionalFood = async (req, res) => {
 	try {
-		const food = new NotionalFoods(req.body);
-		await food.save();
-		res.status(200).json({ message: 'successfully updatedAt', data: food });
+		const food = await NotionalFoods(req.body);
+		const newFood = await food.save();
+		res.status(200).json({ message: 'successfully updatedAt', data: newFood });
 	} catch (error) {
 		res.status(500).json({
 			message: error.message,

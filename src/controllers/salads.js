@@ -36,9 +36,9 @@ export const getByIdSalad = async (req, res) => {
 // Post Method
 export const postSalad = async (req, res) => {
 	try {
-		const salad = new Salad(req.body);
-		await salad.save();
-		res.status(200).json({ message: 'successfully updatedAt', data: salad });
+		const salad = await Salad(req.body);
+		const newSalad = await salad.save();
+		res.status(200).json({ message: 'successfully updatedAt', data: newSalad });
 	} catch (error) {
 		return res.status(500).json({
 			message: error.message,

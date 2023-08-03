@@ -35,9 +35,9 @@ export const getByIdPizza = async (req, res) => {
 // Post Method
 export const postPizza = async (req, res) => {
 	try {
-		const food = new Pizza(req.body);
-		await food.save();
-		res.status(200).json({ message: 'successfully updatedAt', data: food });
+		const food = await Pizza(req.body);
+		const newFood = await food.save();
+		res.status(200).json({ message: 'successfully updatedAt', data: newFood });
 	} catch (error) {
 		return res.status(500).json({
 			message: error.message,

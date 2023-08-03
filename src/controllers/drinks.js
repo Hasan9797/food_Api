@@ -37,9 +37,9 @@ export const getByIdDrink = async (req, res) => {
 // Post Method
 export const postDrink = async (req, res) => {
 	try {
-		const drink = new Drinks(req.body);
-		await drink.save();
-		res.status(200).json({ message: 'successfully updatedAt', data: drink });
+		const drink = await Drinks(req.body);
+		const newDrink = await drink.save();
+		res.status(200).json({ message: 'successfully updatedAt', data: newDrink });
 	} catch (error) {
 		res.status(500).json({
 			message: error.message,
